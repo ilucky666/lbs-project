@@ -8,9 +8,9 @@ Software architecture description
 
 #### Installation
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+1.  Mybatis
+2.  Vue
+3.  SpringBoot
 
 #### Instructions
 
