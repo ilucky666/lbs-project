@@ -1,5 +1,5 @@
 # lbs242502
-lzy-hzy-lbk
+
 #### Description
 242502学期基于位置的服务课程设计代码仓库
 
