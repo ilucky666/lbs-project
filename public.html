@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>公众用户地图</title>
+  <script src="https://webapi.amap.com/maps?v=2.0&key=2024c5f9433e3501f4292255e7fd83e6"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: #ededdc;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #54390a;
+    }
+
+    .card {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 8px 20px rgba(255, 255, 255, 0.1);
+    }
+
+    .controls {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .controls button {
+      background-color: #ffee2f;
+      color: rgb(89, 61, 6);
+      border: none;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .controls button:hover {
+      background-color: #facb32;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+    }
+
+    #map {
+      width: 100%;
+      height: 790px;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    @media screen and (max-width: 768px) {
+      .controls {
+        flex-direction: column;
+        align-items: center;
+      }
+      .controls button {
+        width: 80%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>欢迎，公众用户</h1>
+  <div class="controls">
+    <button onclick="window.location.href='updateUserInfo.html'">个人信息维护</button>
+    <button onclick="window.location.href='getApiKey.html'">获取APIKEY</button>
+    <button onclick="window.location.href='queryPOI.html'">POI数据查询</button>
+  </div>
+
+  <div id="map"></div>
+
+  <script>
+    const token = localStorage.getItem('token');
+    if (!token) {
+      window.location.href = 'index.html';
+    }
+
+    const map = new AMap.Map('map', {
+      center: [116.397428, 39.90923],
+      zoom: 10
+    });
+
+    
+/////////////////////////////////////////////////////////////
+function makeInfoHtml(detail) {
+  // 统一处理 image
+  const imgHtml = detail.image
+    ? `<img src="${detail.image}" style="width:100%;border-radius:4px;
+             box-shadow:0 2px 6px rgba(0,0,0,0.3);margin-bottom:6px;">`
+    : '';
+
+  // 统一处理 telephone
+  const telHtml = detail.telephone
+    ? `<p style="margin:0;"><strong>电话：</strong>${detail.telephone}</p>`
+    : '';
+
+  // 统一处理 intro（后端有时给 []，有时给 '' 或者字符串）
+  const introText = Array.isArray(detail.intro)
+    ? detail.intro.join(', ')
+    : detail.intro || '';
+  const introHtml = introText
+    ? `<p style="margin:0 0 6px;color:#555;">${introText}</p>`
+    : '';
+
+  // 统一处理 website（后端给 []、null、或者字符串）
+  let rawSite = null;
+  if (detail.website) {
+    // 如果是数组，取第一个；如果是字符串，直接用
+    rawSite = Array.isArray(detail.website)
+      ? detail.website[0]
+      : detail.website;
+  }
+  let websiteUrl = null;
+  if (rawSite) {
+    const s = rawSite.toString().trim();
+    if (s) {
+      websiteUrl = /^https?:\/\//i.test(s) ? s : `https://${s}`;
+    }
+  }
+  const webHtml = websiteUrl
+    ? `<p style="margin:4px 0;">
+         <a href="${websiteUrl}"
+            target="_blank"
+            rel="noopener noreferrer"
+            style="display:inline-block;
+                   background:#3498db;
+                   color:#fff;
+                   padding:4px 8px;
+                   border-radius:4px;
+                   text-decoration:none;">
+           访问官网
+         </a>
+       </p>`
+    : `<p style="margin:4px 0; color:#999;">暂无官网信息</p>`;
+
+  // 最终拼 HTML
+  return `
+    <div style="max-width:260px;font-family:sans-serif;">
+      <h3 style="margin:0 0 6px;">${detail.name}</h3>
+      ${imgHtml}
+      ${introHtml}
+      ${telHtml}
+      ${webHtml}
+    </div>
+  `;
+}
+
+//加载显示点
+function loadPOI() {
+  fetch('http://localhost:3000/api/poi', {
+    headers: { 'Authorization': token }
+  })
+  .then(r => r.json().then(d => {
+      if (!r.ok) throw new Error(d.error||'请求失败');
+      return d;
+    }))
+  .then(list => {
+    list.forEach(poi => {
+      const marker = new AMap.Marker({
+        position: [poi.longitude_wgs84, poi.latitude_wgs84],
+        title: poi.name,
+        map
+      });
+
+      marker.on('click', () => {
+        //点击时再去拉详情
+        fetch(`http://localhost:3000/api/poi/${poi.id}/details`, {
+          headers: { 'Authorization': token }
+        })
+        .then(r => r.json().then(d => {
+            if (!r.ok) throw new Error(d.error||'详情加载失败');
+            return d;
+          }))
+        .then(detail => {
+          console.log('detail:', detail);
+          // 直接调用makeInfoHtml
+          const html = makeInfoHtml(detail);
+
+          // 用新的 html 创建并打开 InfoWindow
+          new AMap.InfoWindow({
+            content: html,
+            offset: new AMap.Pixel(0, -30)
+          }).open(map, marker.getPosition());
+        })
+        .catch(err => {
+          console.error(err);
+          alert(err.message);
+        });
+      });
+    });
+  })
+  .catch(err => {
+    console.error(err);
+    alert(err.message);
+  });
+}
+
+// 页面加载完就调一次
+loadPOI();
+  </script>
+</body>
+</html>
