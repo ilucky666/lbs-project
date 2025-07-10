@@ -1,4 +1,4 @@
-POI 信息服务平台与 WebGIS 客户端
+POI 信息服务平台与WebGIS客户端
 本项目是一个功能完备的基于位置服务 (LBS) 的全栈应用，旨在提供专题兴趣点 (POI) 数据的管理、查询和地图可视化功能。它包含一个基于 Node.js 的 RESTful API 后端和一个使用 Vue 3 构建的现代化 Web 前端。
 
 项目核心功能
@@ -27,7 +27,7 @@ API KEY 管理: 公众用户可以获取和管理自己的 API KEY (后端功能
 
 前端
 
-Vue 3 (Composition API, <script setup>), Vite, TypeScript, Element Plus, Pinia, Axios, Vue Router, 高德地图 JSAPI v2.0
+Vue 3 (Composition API, <script setup>), Vite, TypeScript, Element Plus, Pinia, Axios, Vue Router, 高德地图JSAPI v2.0
 
 后端
 
@@ -49,7 +49,7 @@ VS Code, Postman, Git, Gitee/GitHub
 本项目分为 backend (后端) 和 frontend (前端，在你的项目中是 vueproject) 两个部分，需要分别启动。
 
 1. 后端 (Backend)
-   前提条件:
+前提条件:
 
 已安装 Node.js (推荐 LTS 版本)
 
@@ -67,7 +67,6 @@ cd backend
 如果 package.json 存在，运行 npm install 来安装所有依赖。如果某些依赖（如 express, mongoose, cors, jsonwebtoken, bcryptjs, express-rate-limit）未安装，请手动安装。
 
 npm install
-
 # 或 npm install express mongoose cors jsonwebtoken bcryptjs express-rate-limit
 
 配置环境变量:
@@ -77,16 +76,14 @@ npm install
 在文件中添加至少以下两个变量：
 
 # 你的 MongoDB 连接字符串
-
 MONGO_URI=mongodb://localhost:27017/poi-system
 
 # 用于 JWT 加密的密钥，请使用一个更复杂的随机字符串
-
 JWT_SECRET=your_super_secret_key_for_jwt
 
 导入初始数据 (可选但推荐):
 
-确保你的 全国 A 级景区.geojson 文件经过预处理（提取 features 数组为一个纯 JSON 数组文件，例如 pois_for_import.json）。
+确保你的 全国A级景区.geojson 文件经过预处理（提取 features 数组为一个纯 JSON 数组文件，例如 pois_for_import.json）。
 
 运行 mongoimport 命令导入数据：
 
@@ -101,7 +98,7 @@ node app.js
 看到 "Server running on port 3000" 和 "MongoDB connected" 的日志即表示后端启动成功。
 
 2. 前端 (Frontend / vueproject)
-   前提条件:
+前提条件:
 
 已安装 Node.js (推荐 LTS 版本)
 
@@ -123,12 +120,10 @@ npm install
 在文件中添加以下变量，并确保 VITE_API_BASE_URL 指向你正在运行的后端服务：
 
 # 后端服务的根地址
-
 VITE_API_BASE_URL=http://localhost:3000
 
 # 你申请的高德地图 Web JS API Key
-
-VITE_AMAP_KEY=你的高德地图 Key
+VITE_AMAP_KEY=你的高德地图Key
 
 检查 Vite 配置:
 
@@ -153,13 +148,13 @@ POST /api/auth/register - 用户注册
 
 POST /api/auth/login - 用户登录
 
-GET /api/poi/list - 获取 POI 列表（支持 name, province 等查询参数）
+GET /api/poi/list - 获取POI列表（支持 name, province 等查询参数）
 
-POST /api/poi/add - 新增 POI (需要管理员权限)
+POST /api/poi/add - 新增POI (需要管理员权限)
 
-PUT /api/poi/update/:id - 修改指定 ID 的 POI (需要管理员权限)
+PUT /api/poi/update/:id - 修改指定ID的POI (需要管理员权限)
 
-DELETE /api/poi/delete/:id - 删除指定 ID 的 POI (需要管理员权限)
+DELETE /api/poi/delete/:id - 删除指定ID的POI (需要管理员权限)
 
 POST /api/poi/search/box - 拉框范围查询
 

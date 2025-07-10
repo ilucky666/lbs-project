@@ -1,0 +1,10 @@
+Flask>=2.0
+flask-restx>=0.5  # 或者最新版
+Flask-SQLAlchemy>=2.5
+psycopg2-binary>=2.9 # PostgreSQL 驱动
+Flask-Bcrypt>=1.0
+PyJWT>=2.0
+Flask-Limiter>=2.0 # 用于API限流
+python-dotenv # 用于从 .env 文件加载环境变量 (可选)
+gunicorn # 用于生产部署 (可选)
+GeoAlchemy2 # 如果要实现精确的空间查询，需要这个和 PostGIS
