@@ -1,161 +1,147 @@
-POI 信息服务平台与WebGIS客户端
-本项目是一个功能完备的基于位置服务 (LBS) 的全栈应用，旨在提供专题兴趣点 (POI) 数据的管理、查询和地图可视化功能。它包含一个基于 Node.js 的 RESTful API 后端和一个使用 Vue 3 构建的现代化 Web 前端。
+# POI Information Service Platform & WebGIS Client
 
-项目核心功能
-分角色权限管理: 系统定义了“管理员”和“公众用户”两种角色，具有不同的操作权限。
+This project is a full-stack Location-Based Service (LBS) application that provides management, query, and visualization of Points of Interest (POI) data. It consists of a Node.js RESTful API backend and a modern Vue 3-based frontend client.
+![项目演示 ](https://github.com/user-attachments/assets/642c7942-2cd9-4759-9957-812619645333)
 
-用户认证: 基于 JWT (JSON Web Token) 的注册和登录系统。
+---
 
-POI 数据管理 (管理员): 管理员可以对 POI 数据进行增、删、改、查 (CRUD) 操作，并支持通过 GeoJSON 文件批量导入数据。
+## 🚀 Core Features
 
-POI 数据查询 (公众用户):
+### 🔐 Role-Based Access & Authentication
 
-支持按名称、地区、类别等多种条件进行筛选。
+* Roles: Administrator / Public User
+* JWT-based authentication system (register / login)
 
-地图交互式查询: 用户可以直接在地图上进行拉框范围查询和中心点半径查询。
+### 📦 POI Data Management (Admin)
 
-API KEY 管理: 公众用户可以获取和管理自己的 API KEY (后端功能已规划)。
+* Full CRUD operations
+* Support bulk import from GeoJSON files
 
-地图可视化: 查询到的 POI 数据会在高德地图上以标记点 (Marker) 的形式进行可视化展示。
+### 🔍 POI Search (Public User)
 
-前端界面: 提供了数据列表展示、分页、表单操作等丰富的 UI 交互。
+* Filter by name, region, category, etc.
+* Map-based queries: rectangle selection or radius from center
+* API KEY management (planned)
 
-技术栈
-类别
+### 🗺️ Map Visualization & UI
 
-技术
+* Display POIs as markers on AMap (Gaode Map)
+* Rich UI: table list, pagination, forms, and interactive popups
 
-前端
+---
 
-Vue 3 (Composition API, <script setup>), Vite, TypeScript, Element Plus, Pinia, Axios, Vue Router, 高德地图JSAPI v2.0
+## 🧱 Tech Stack
 
-后端
+| Layer      | Technology                                                                                                |
+| ---------- | --------------------------------------------------------------------------------------------------------- |
+| Frontend   | Vue 3 (Composition API + `<script setup>`), Vite, Element Plus, Pinia, Vue Router, Axios, AMap JSAPI v2.0 |
+| Backend    | Node.js, Express.js, MongoDB, Mongoose                                                                    |
+| Auth       | JWT (jsonwebtoken), bcryptjs                                                                              |
+| Data Tools | mongoimport, Python (pymongo) scripts                                                                     |
+| Dev Tools  | VS Code, Git, Postman, Gitee/GitHub                                                                       |
 
-Node.js, Express.js, MongoDB, Mongoose
+---
 
-认证
+## 📦 Setup & Run Instructions
 
-JSON Web Tokens (JWT), bcryptjs
+The project consists of two parts: `backend/` and `vueproject/`. Both must be started independently.
 
-数据处理
+### ✅ Backend Setup
 
-mongoimport 命令行工具, Python (pymongo) 脚本
+#### Prerequisites
 
-开发工具
+* Install Node.js (LTS recommended)
+* Install and run MongoDB
+* Install MongoDB Database Tools (for `mongoimport`)
 
-VS Code, Postman, Git, Gitee/GitHub
+#### Install dependencies
 
-项目启动与运行指南
-本项目分为 backend (后端) 和 frontend (前端，在你的项目中是 vueproject) 两个部分，需要分别启动。
-
-1. 后端 (Backend)
-前提条件:
-
-已安装 Node.js (推荐 LTS 版本)
-
-已安装并运行 MongoDB 数据库服务
-
-已安装 MongoDB Database Tools (用于 mongoimport)
-
-启动步骤:
-
-进入后端项目目录:
-
+```bash
 cd backend
-
-安装依赖:
-如果 package.json 存在，运行 npm install 来安装所有依赖。如果某些依赖（如 express, mongoose, cors, jsonwebtoken, bcryptjs, express-rate-limit）未安装，请手动安装。
-
 npm install
-# 或 npm install express mongoose cors jsonwebtoken bcryptjs express-rate-limit
+```
 
-配置环境变量:
+#### Create `.env` file in `backend/`
 
-在 backend 目录下创建一个 .env 文件。
-
-在文件中添加至少以下两个变量：
-
-# 你的 MongoDB 连接字符串
+```env
 MONGO_URI=mongodb://localhost:27017/poi-system
+JWT_SECRET=your_super_secret_key
+```
 
-# 用于 JWT 加密的密钥，请使用一个更复杂的随机字符串
-JWT_SECRET=your_super_secret_key_for_jwt
+#### (Optional) Import initial POI data
 
-导入初始数据 (可选但推荐):
+Make sure you have a JSON array file like `pois_for_import.json`
 
-确保你的 全国A级景区.geojson 文件经过预处理（提取 features 数组为一个纯 JSON 数组文件，例如 pois_for_import.json）。
-
-运行 mongoimport 命令导入数据：
-
+```bash
 mongoimport --db poi-system --collection pois --file pois_for_import.json --jsonArray
+```
 
-或者，使用我们之前讨论的 Python 脚本进行导入。
+#### Start the backend
 
-启动后端服务:
-
+```bash
 node app.js
+```
 
-看到 "Server running on port 3000" 和 "MongoDB connected" 的日志即表示后端启动成功。
+You should see: `Server running on port 3000` and `MongoDB connected`
 
-2. 前端 (Frontend / vueproject)
-前提条件:
+---
 
-已安装 Node.js (推荐 LTS 版本)
+### ✅ Frontend Setup
 
-启动步骤:
+#### Install dependencies
 
-进入前端项目目录:
-
+```bash
 cd vueproject
-
-安装依赖:
-这将安装 Vue、Vite、Element Plus、高德地图加载器等所有前端依赖。
-
 npm install
+```
 
-配置环境变量:
+#### Create `.env.development` in `vueproject/`
 
-在 vueproject 目录下创建一个 .env.development 文件。
-
-在文件中添加以下变量，并确保 VITE_API_BASE_URL 指向你正在运行的后端服务：
-
-# 后端服务的根地址
+```env
 VITE_API_BASE_URL=http://localhost:3000
+VITE_AMAP_KEY=your_amap_js_api_key
+```
 
-# 你申请的高德地图 Web JS API Key
-VITE_AMAP_KEY=你的高德地图Key
+#### Configuration Notes
 
-检查 Vite 配置:
+* Make sure `vite.config.ts` does not use `server.proxy`
+* Disable mock data in `src/main.ts`
 
-打开 vite.config.ts 文件。
+#### Start frontend server
 
-确保 server.proxy 部分已被注释掉或删除，因为我们现在直接连接后端地址，不再需要 Vite 代理。
-
-检查 Mock 服务状态:
-
-打开 src/main.ts 文件。
-
-确保文件末尾启动 Mock 服务的代码块 (if (import.meta.env.DEV) { import('@/mock') ... }) 已被注释掉，以确保所有 API 请求都发往真实后端。
-
-启动前端开发服务器:
-
+```bash
 npm run dev
+```
 
-看到 Vite 的启动信息和本地访问 URL（如 http://localhost:5173/）即表示前端启动成功。
+Visit: `http://localhost:5173/`
 
-API 端点概览
-POST /api/auth/register - 用户注册
+---
 
-POST /api/auth/login - 用户登录
+## 📚 API Endpoints Overview
 
-GET /api/poi/list - 获取POI列表（支持 name, province 等查询参数）
+| Method | Endpoint              | Description                   |
+| ------ | --------------------- | ----------------------------- |
+| POST   | `/api/auth/register`  | Register a new user           |
+| POST   | `/api/auth/login`     | User login                    |
+| GET    | `/api/poi/list`       | Query POIs (supports filters) |
+| POST   | `/api/poi/add`        | Add new POI (admin only)      |
+| PUT    | `/api/poi/update/:id` | Update POI by ID (admin only) |
 
-POST /api/poi/add - 新增POI (需要管理员权限)
+---
 
-PUT /api/poi/update/:id - 修改指定ID的POI (需要管理员权限)
+## 📌 TODO (Planned Features)
 
-DELETE /api/poi/delete/:id - 删除指定ID的POI (需要管理员权限)
+* [ ] API KEY generation and management
+* [ ] POI category layer control
+* [ ] Accessibility analysis & routing services
+* [ ] GeoServer / PostGIS backend support
 
-POST /api/poi/search/box - 拉框范围查询
+---
 
-POST /api/poi/search/radius - 中心点半径查询
+## 📖 License
+
+MIT License — feel free to use, modify, and contribute.
+
+---
+
+> Found this project helpful? Star ⭐, fork 🍴, or open an issue 🛠️ on GitHub!
