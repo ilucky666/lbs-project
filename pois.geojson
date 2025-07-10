@@ -1,0 +1,31 @@
+{
+    "type": "FeatureCollection",
+    "features": [
+      {
+        "type": "Feature",
+        "properties": {
+          "name": "测试景区A",
+          "level": "4A",
+          "province": "测试省",
+          "city": "测试市"
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [116.397128, 39.916527]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "name": "测试景区B",
+          "level": "5A",
+          "province": "测试省",
+          "city": "测试市"
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [117.200983, 39.084158]
+        }
+      }
+    ]
+  }
