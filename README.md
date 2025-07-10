@@ -1,8 +1,9 @@
 # POI 信息服务平台与 WebGIS 客户端
 
 本项目是一个基于位置服务（LBS）的全栈应用，提供兴趣点（POI）数据的管理、查询和地图可视化功能，包含 Node.js 的 RESTful API 后端和 Vue 3 构建的 Web 前端。
+![项目演示 ](https://github.com/user-attachments/assets/aabcdd20-881b-49cd-90e9-916a5081dfea)
 
----
+
 
 ## 🚀 核心功能
 
